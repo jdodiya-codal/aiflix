@@ -6,7 +6,7 @@ requests
 python-dotenv
 Pillow
 tqdm
-
+django-cors-headers
 
 
 
