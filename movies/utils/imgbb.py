@@ -24,6 +24,7 @@ def upload_tmdb_image_to_imgbb(tmdb_image_url):
 
     result = upload.json()
     if 'data' in result and 'url' in result['data']:
+        print(result,"hh responce")
         return result['data']['url']
     else:
         raise Exception("ImgBB upload failed: " + str(result))
