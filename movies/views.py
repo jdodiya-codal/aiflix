@@ -216,7 +216,7 @@ class RunMovieImportView(APIView):
             return Response({"error": "Unauthorized"}, status=401)
 
         try:
-            call_command("fetch_movies_from_tmdb")  # your custom command
+            call_command("import_tmdb_movies")  # your custom command
             return Response({"message": "Movies imported successfully."}, status=200)
         except Exception as e:
             return Response({"error": str(e)}, status=500)
