@@ -6,6 +6,7 @@ from .serializers import MovieSerializer
 from django.conf import settings
 import requests
 import re
+from utils.imgbb import upload_tmdb_image_to_imgbb
 
 
 
@@ -18,6 +19,7 @@ HEADERS = {
     "Accept": "application/json"
 }
 
+
 def fetch_tmdb_movies_data(titles):
     results = []
     for title in titles:
@@ -27,15 +29,26 @@ def fetch_tmdb_movies_data(titles):
             items = res.json().get("results")
             if items:
                 movie = items[0]
+                # Build TMDB poster URL
+                tmdb_poster_url = f"https://image.tmdb.org/t/p/w500{movie['poster_path']}" if movie.get("poster_path") else None
+
+                # Upload to ImgBB
+                imgbb_url = None
+                if tmdb_poster_url:
+                    try:
+                        imgbb_url = upload_tmdb_image_to_imgbb(tmdb_poster_url)
+                    except Exception as e:
+                        print(f"Failed to upload to ImgBB: {e}")
+                        imgbb_url = tmdb_poster_url  # fallback to TMDB poster
+
                 results.append({
                     "title": movie["title"],
                     "overview": movie["overview"],
                     "release_date": movie["release_date"],
-                    "poster": f"https://image.tmdb.org/t/p/w500{movie['poster_path']}" if movie.get("poster_path") else None,
+                    "poster": imgbb_url,
                     "rating": movie["vote_average"]
                 })
     return results
-
 
 def extract_titles(text):
     raw_titles = re.findall(r'"([^"]+)"', text)

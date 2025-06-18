@@ -22,7 +22,7 @@ class Genre(models.Model):
 class Movie(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
-    poster = models.ImageField(upload_to='movie_posters/', blank=True, null=True)
+    poster = models.URLField(null=True, blank=True)
     trailer_url = models.URLField(blank=True, null=True)
     release_year = models.IntegerField()
     genres = models.ManyToManyField(Genre)
