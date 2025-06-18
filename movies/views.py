@@ -6,9 +6,9 @@ from .serializers import MovieSerializer
 from django.conf import settings
 import requests
 import re
-from utils.imgbb import upload_tmdb_image_to_imgbb
-
-
+from movies.utils.imgbb import upload_tmdb_image_to_imgbb
+from django.core.management import call_command
+import os
 
 TMDB_API_KEY = settings.TMDB_API_KEY
 
@@ -204,3 +204,19 @@ class MovieReviewsAPIView(APIView):
         result = generate_from_hf(prompt)
 
         return Response({"reviews": result})
+
+
+
+
+class RunMovieImportView(APIView):
+    def post(self, request):
+        secret = request.data.get("secret")
+
+        if secret != os.getenv("ADMIN_TRIGGER_SECRET"):
+            return Response({"error": "Unauthorized"}, status=401)
+
+        try:
+            call_command("fetch_movies_from_tmdb")  # your custom command
+            return Response({"message": "Movies imported successfully."}, status=200)
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)
