@@ -1,4 +1,3 @@
-from openai import OpenAI
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -9,7 +8,6 @@ import requests
 import re
 
 
-client = OpenAI(api_key=settings.OPENAI_API_KEY)
 
 TMDB_API_KEY = settings.TMDB_API_KEY
 
@@ -97,27 +95,6 @@ class MovieListAPIView(APIView):
 
         serializer = MovieSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-class AskAIView(APIView):
-    def post(self, request):
-        question = request.data.get("question")
-        if not question:
-            return Response({"error": "Question is required"}, status=400)
-
-        try:
-            response = client.chat.completions.create(
-                model="gpt-3.5-turbo",
-                messages=[
-                    {"role": "system", "content": "You are a helpful movie assistant. Recommend movies from our platform."},
-                    {"role": "user", "content": question},
-                ]
-            )
-
-            answer = response.choices[0].message.content
-            return Response({"answer": answer})
-
-        except Exception as e:
-            return Response({"error": str(e)}, status=500)
 
 
 class AskHuggingFaceAIView(APIView):
