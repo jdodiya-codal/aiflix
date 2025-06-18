@@ -220,3 +220,53 @@ class RunMovieImportView(APIView):
             return Response({"message": "Movies imported successfully."}, status=200)
         except Exception as e:
             return Response({"error": str(e)}, status=500)
+
+
+
+
+class AskOpenRouterDynamicModelView(APIView):
+    def post(self, request):
+        question = request.data.get("question")
+        model = request.data.get("model") or os.getenv("OPENROUTER_MODEL", "mistralai/mistral-7b-instruct:free")
+
+        if not question:
+            return Response({"error": "Question is required"}, status=400)
+
+        headers = {
+            "Authorization": f"Bearer {settings.OPENROUTER_API_KEY}",
+            "Content-Type": "application/json"
+        }
+
+        payload = {
+            "model": model,
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "You are a helpful movie assistant. Always wrap movie titles in double quotes."
+                },
+                {
+                    "role": "user",
+                    "content": question
+                }
+            ]
+        }
+
+        try:
+            response = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=payload, timeout=60)
+            data = response.json()
+
+            if "choices" not in data:
+                return Response({"error": "OpenRouter response invalid", "raw": data}, status=500)
+
+            message = data["choices"][0]["message"]["content"]
+            movie_titles = extract_titles(message)
+            movie_data = fetch_tmdb_movies_data(movie_titles)
+
+            return Response({
+                "answer": message,
+                "movie_data": movie_data,
+                "model": model  # helpful for frontend to display
+            })
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)
