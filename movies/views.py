@@ -116,21 +116,21 @@ class AskHuggingFaceAIView(APIView):
         if not question:
             return Response({"error": "Question is required"}, status=400)
 
-        payload = {
-            "inputs": f"User: {question}\nAssistant:",
-            "parameters": {
-                "max_new_tokens": 150,
-                "temperature": 0.7
-            }
-        }
-
         HF_URL = "https://api-inference.huggingface.co/models/HuggingFaceH4/zephyr-7b-beta"
         headers = {
             "Authorization": f"Bearer {settings.HF_API_TOKEN}",
             "Accept": "application/json"
         }
+        # payload = {
+        #     "inputs": f"<|user|>\n{question}\n<|assistant|>",
+        #     "parameters": {
+        #         "max_new_tokens": 150,
+        #         "temperature": 0.7
+        #     }
+        # }
+
         payload = {
-            "inputs": f"<|user|>\n{question}\n<|assistant|>",
+            "inputs": f"<|system|>You are a helpful movie assistant. Always wrap movie titles in double quotes.\n<|user|>\n{question}\n<|assistant|>",
             "parameters": {
                 "max_new_tokens": 150,
                 "temperature": 0.7
