@@ -59,6 +59,13 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
 ]
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "https://aiflix-frontend.vercel.app",
+]
+
+CORS_ALLOW_ALL_ORIGINS = True
+
 ROOT_URLCONF = 'aiflix.urls'
 
 TEMPLATES = [
@@ -141,8 +148,5 @@ TMDB_API_KEY = os.getenv("TMDB_API_KEY")
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "https://aiflix-frontend.vercel.app",
-]
+
 
