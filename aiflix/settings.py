@@ -61,6 +61,7 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "https://aiflix-frontend.vercel.app",
+    "https://askmovie.vercel.app",
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
