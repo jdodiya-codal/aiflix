@@ -74,6 +74,41 @@ def generate_from_hf(prompt):
     except Exception as e:
         return f"Error: {str(e)}"
 
+
+
+def generate_from_openrouter(prompt, model=None):
+    model = model or os.getenv("OPENROUTER_MODEL", "mistralai/mistral-7b-instruct:free")
+    headers = {
+        "Authorization": f"Bearer {settings.OPENROUTER_API_KEY}",
+        "Content-Type": "application/json"
+    }
+
+    payload = {
+        "model": model,
+        "messages": [
+            {
+                "role": "system",
+                "content": "You are a helpful movie reviewer. Respond like a human. Write bullet-style reviews."
+            },
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ]
+    }
+
+    try:
+        response = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=payload, timeout=60)
+        data = response.json()
+
+        if "choices" in data:
+            return data["choices"][0]["message"]["content"]
+        else:
+            return "No reviews available."
+    except Exception as e:
+        return f"Error: {str(e)}"
+
+
 class MovieListAPIView(APIView):
     def get(self, request):
         queryset = Movie.objects.all()
@@ -200,12 +235,10 @@ class MovieReviewsAPIView(APIView):
         if not title:
             return Response({"error": "Movie title is required"}, status=400)
 
-        prompt = f"Write 5 short, realistic user reviews for the movie '{title}'."
-        result = generate_from_hf(prompt)
+        prompt = f"Write 5 short, human-like bullet-point user reviews for the movie \"{title}\"."
+        result = generate_from_openrouter(prompt)
 
         return Response({"reviews": result})
-
-
 
 
 class RunMovieImportView(APIView):
