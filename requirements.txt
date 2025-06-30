@@ -11,5 +11,6 @@ djangorestframework
 djangorestframework-simplejwt
 dj-database-url
 psycopg2-binary
+drf_yasg
 
 
