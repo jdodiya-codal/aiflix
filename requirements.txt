@@ -8,6 +8,6 @@ Pillow
 tqdm
 django-cors-headers
 dj-database-url
-
+rest_framework_simplejwt
 
 
