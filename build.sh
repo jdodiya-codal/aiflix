@@ -3,8 +3,11 @@
 # Install dependencies
 pip install -r requirements.txt
 
-# Run migrations
+# Run database migrations
 python manage.py migrate
+
+# Collect static files (admin CSS, JS, etc.)
+python manage.py collectstatic --noinput
 
 # Create superuser if it doesn't already exist
 echo "
