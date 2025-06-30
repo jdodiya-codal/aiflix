@@ -7,7 +7,9 @@ python-dotenv
 Pillow
 tqdm
 django-cors-headers
+djangorestframework
+djangorestframework-simplejwt
 dj-database-url
-rest_framework_simplejwt
+psycopg2-binary
 
 
