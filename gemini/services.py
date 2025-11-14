@@ -15,7 +15,7 @@ def get_gemini_response(prompt: str) -> str:
 
     try:
         # Use a valid Gemini model
-        model = genai.GenerativeModel("gemini-2.5-flash")
+        model = genai.GenerativeModel("gemini-2.0-flash-lite")
 
         # Generate text
         response = model.generate_content(prompt)

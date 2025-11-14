@@ -1,7 +1,31 @@
+#services:
+#  - type: web
+#    name: aiflix-backend
+#    env: python
+#    buildCommand: ./build.sh
+#    startCommand: gunicorn aiflix.wsgi:application
+#    envVars:
+#      - key: DJANGO_SETTINGS_MODULE
+#        value: aiflix.settings
+#      - key: DEBUG
+#        value: False
+#      - fromDatabase:
+#          name: aiflix-db
+#          property: connectionString
+#      - key: HF_API_TOKEN
+#        sync: false
+#      - key: TMDB_API_KEY
+#        sync: false
+#
+#databases:
+#  - name: aiflix-db
+
+
 services:
   - type: web
     name: aiflix-backend
     env: python
+    pythonVersion: 3.11   # 👈 VERY IMPORTANT
     buildCommand: ./build.sh
     startCommand: gunicorn aiflix.wsgi:application
     envVars:
@@ -12,6 +36,7 @@ services:
       - fromDatabase:
           name: aiflix-db
           property: connectionString
+          key: DATABASE_URL   # 👈 FORCE THE NAME (very important!)
       - key: HF_API_TOKEN
         sync: false
       - key: TMDB_API_KEY
@@ -19,3 +44,4 @@ services:
 
 databases:
   - name: aiflix-db
+
