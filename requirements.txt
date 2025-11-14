@@ -13,7 +13,5 @@ dj-database-url
 psycopg2-binary
 drf_yasg
 whitenoise
-google
-genai
-
+google-generativeai
 
